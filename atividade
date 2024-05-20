@@ -1,0 +1,116 @@
+-- Exercícios Banco de Dados - WomakersCode
+
+-- 1. Crie uma tabela chamada "alunos" com os seguintes campos: id (inteiro), nome (texto), idade (inteiro) e curso (texto). 
+
+CREATE TABLE alunos(id INT, nome VARCHAR(100), idade INT, curso VARCHAR(200));
+
+-- 2. Insira pelo menos 5 registros de alunos na tabela que você criou no exercício anterior.
+
+INSERT INTO alunos(id, nome, idade, curso) VALUES(1, "Ana Silva", 20, "Engenharia");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(2, "Bruno Costa", 24, "Ciências sociais");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(3, "Carla Mendes", 26, "Direito");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(4, "Daniel Souza", 31, "Administração");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(5, "Elena Martins", 35, "Contabilidade");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(6, "Elisa Moura", 18, "Tecnologia da Informação");
+INSERT INTO alunos(id, nome, idade, curso) VALUES(7, "Marcos Vinícius", 19, "Engenharia");
+SELECT * FROM alunos;
+
+
+-- 3. Consultas Básicas Escreva consultas SQL para realizar as seguintes tarefas: a) Selecionar todos os registros da tabela "alunos". b) Selecionar o nome e a idade dos alunos com mais de 20 anos. c) Selecionar os alunos do curso de "Engenharia" em ordem alfabética. d) Contar o número total de alunos na tabela 
+
+SELECT
+	nome,
+	idade
+FROM alunos a
+WHERE idade > 20;
+SELECT
+	nome
+FROM alunos a
+WHERE curso = "Engenharia"
+ORDER BY nome;
+SELECT DISTINCT
+	COUNT(id)
+FROM alunos;
+
+
+-- 4. Atualização e Remoção a) Atualize a idade de um aluno específico na tabela. b) Remova um aluno pelo seu ID. 
+UPDATE alunos SET idade= 21 WHERE nome= "Ana Silva";
+DELETE FROM alunos WHERE id= 6;
+5. Criar uma Tabela e Inserir Dados Crie uma tabela chamada "clientes" com os campos: id (chave primária), nome (texto), idade (inteiro) e saldo (float). Insira alguns registros de clientes na tabela. 
+
+CREATE TABLE clientes(id INT PRIMARY KEY, nome VARCHAR(100), idade INT, saldo FLOAT);
+INSERT INTO clientes (id, nome, idade, saldo) VALUES
+(1, 'Ana Silva', 30, 1500.75),
+(2, 'Bruno Costa', 45, 2500.00),
+(3, 'Carla Mendes', 22, 1750.50),
+(4, 'Daniel Souza', 28, 300.00),
+(5, 'Elena Martins', 35, 4200.10),
+(6, 'Fernando Lima', 50, 3800.00),
+(7, 'Gabriela Rocha', 27, 900.75),
+(8, 'Hugo Santos', 40, 3100.25);
+
+
+-- 6. Consultas e Funções Agregadas Escreva consultas SQL para realizar as seguintes tarefas: a) Selecione o nome e a idade dos clientes com idade superior a 30 anos. b) Calcule o saldo médio dos clientes. c) Encontre o cliente com o saldo máximo. d) Conte quantos clientes têm saldo acima de 1000. 
+
+SELECT
+	*
+FROM clientes;
+SELECT
+	nome,
+	idade
+FROM clientes
+WHERE idade > 30;
+SELECT
+	AVG(saldo)
+FROM clientes;
+SELECT
+	MAX(saldo)
+FROM clientes;
+SELECT
+	COUNT(id)
+FROM clientes
+WHERE saldo > 1000;
+
+
+-- 7. Atualização e Remoção com Condições a) Atualize o saldo de um cliente específico. b) Remova um cliente pelo seu ID. 
+
+UPDATE clientes SET saldo = 2000.00 WHERE nome= "Ana Silva";
+DELETE FROM clientes WHERE id= 4;
+
+
+-- 8. Junção de Tabelas Crie uma segunda tabela chamada "compras" com os campos: id (chave primária), cliente_id (chave estrangeira referenciando o id da tabela "clientes"), produto (texto) e valor (real). Insira algumas compras associadas a clientes existentes na tabela "clientes". Escreva uma consulta para exibir o nome do cliente, o produto e o valor de cada compra.
+
+CREATE TABLE compras(
+   id INT PRIMARY KEY,
+   cliente_id INT,
+   produto VARCHAR(100),
+   valor FLOAT,
+   FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+INSERT INTO compras (id, cliente_id, produto, valor) VALUES
+(1, 1, 'Notebook', 2500.00),
+(2, 2, 'Smartphone', 1500.50),
+(3, 3, 'Tablet', 800.00),
+(4, 4, 'Monitor', 500.00),
+(5, 5, 'Teclado', 200.00),
+(6, 6, 'Mouse', 150.00),
+(7, 7, 'Impressora', 300.00),
+(8, 8, 'Cadeira de Escritório', 700.00);
+SELECT
+	*
+FROM compras;
+SELECT
+   c.id AS ClienteID,
+   c.nome AS Nome,
+   c.idade AS Idade,
+   c.saldo AS Saldo,
+   SUM(co.valor) AS TotalCompras
+FROM
+   clientes c
+LEFT JOIN
+   compras co ON c.id = co.cliente_id
+GROUP BY
+   c.id, c.nome, c.idade, c.saldo
+ORDER BY
+   TotalCompras DESC;
+
